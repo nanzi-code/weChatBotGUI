@@ -1,4 +1,5 @@
 import sys
+import typing
 import warnings
 import os
 
@@ -590,6 +591,15 @@ class personnalPageWidget(QWidget):
     def initUI(self):
         pass
 
+## 版权信息页面
+class rightWidget(QWidget):
+    def __init__(self) -> None:
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        pass
+
 ## 主窗口
 class mainWindow(QMainWindow):
     def __init__(self) -> None:
@@ -602,7 +612,7 @@ class mainWindow(QMainWindow):
             warningTitle = str("警告")
             QMessageBox.warning(self,warningTitle,warningText,QMessageBox.StandardButton.Ok)
         
-        self.initMenuCallback(True)
+        self.initMenuCallback(False)
         self.mainWidget = mainWidget(self.menuBar(),self.statusBar())
         self.setCentralWidget(self.mainWidget)
     
@@ -618,6 +628,10 @@ class mainWindow(QMainWindow):
         ac = QAction("未登录",self)
         ac.triggered.connect(self.noLoginAction)
         listMenu.addAction(ac)
+        
+        right = QAction("版权信息",self)
+        right.triggered.connect(self.openRightPage)
+        listMenu.addAction(right)
 
     def initMenuWithLogin(self):
         menuBar = self.menuBar()
@@ -625,10 +639,17 @@ class mainWindow(QMainWindow):
         ac = QAction("个人中心",self)
         ac.triggered.connect(self.loginAction)
         listMenu.addAction(ac)
+        
+        right = QAction("版权信息",self)
+        right.triggered.connect(self.openRightPage)
+        listMenu.addAction(right)
     
     def noLoginAction(self):
         status = self.statusBar()
         status.showMessage("打开登陆页面")
+        self.loginW = loginMainWidget(self.initMenuCallback)
+        self.loginW.setWindowModality(Qt.WindowModality.ApplicationModal)
+        self.loginW.show()
     
     def loginAction(self):
         status = self.statusBar()
@@ -636,3 +657,9 @@ class mainWindow(QMainWindow):
         self.loginW = loginMainWidget(self.initMenuCallback)
         self.loginW.setWindowModality(Qt.WindowModality.ApplicationModal)
         self.loginW.show()
+    
+    def openRightPage(self):
+        self.statusBar().showMessage("打开版权信息")
+        self.rightPage = rightWidget()
+        self.rightPage.show()
+
